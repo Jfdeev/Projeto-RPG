@@ -116,10 +116,8 @@ public class Arena {
 
   public Personagem peekProximoTurno() {
     if (filaTurnos.estaVazia()) {
-      return null;
+        return null;
     }
-    Personagem proximo = filaTurnos.dequeue();
-    filaTurnos.enqueue(proximo);
-    return proximo;
-  }
+    return filaTurnos.peek();   // usa o novo método peek()
+}
 }

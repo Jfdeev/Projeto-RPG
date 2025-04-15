@@ -52,4 +52,11 @@ public class FilaEncadeada<T> {
   public int tamanho() {
     return tamanho;
   }
+  
+  public T peek() {
+    if (estaVazia()) {
+      throw new IllegalStateException("Fila vazia");
+    }
+    return inicio.dado;
+  }
 }
