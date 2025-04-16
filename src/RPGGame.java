@@ -257,6 +257,7 @@ public class RPGGame {
         System.out.println("\nAções:");
         System.out.println("1. Atacar");
         System.out.println("2. Usar Habilidade");
+        System.out.println("3. Fugir");
         System.out.print("Escolha uma ação: ");
         int acao = lerInteiro();
 
@@ -311,7 +312,14 @@ public class RPGGame {
           } else {
             System.out.println("Habilidade inválida! Ação cancelada.");
           }
-        } else {
+        } else if (acao == 3) {
+          System.out.println("Você fugiu da batalha!");
+          // limpa o estado de batalha e sai para o menu
+          arenaAtual = null;
+          personagemJogadorAtivo = null;
+          return;
+        }
+         else {
           System.out.println("Ação inválida! Turno perdido.");
           arenaAtual.executarTurno(null, 1, null);
         }
