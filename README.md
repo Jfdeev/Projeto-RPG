@@ -1,18 +1,32 @@
-## Getting Started
+# Projeto-RPG
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Um jogo de RPG baseado em turnos desenvolvido em Java, projetado para oferecer uma experiência interativa com criação de personagens, batalhas PvP e PvE, e um sistema de habilidades. O jogo utiliza estruturas de dados personalizadas (lista encadeada, fila e pilha) para gerenciar personagens, turnos e rankings, proporcionando uma jogabilidade estratégica em um ambiente de console.
 
-## Folder Structure
+## Índice
+- [Funcionalidades](#funcionalidades)
+- [Pré-requisitos](#pré-requisitos)
+- [Instalação](#instalação)
+- [Como Jogar](#como-jogar)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Contribuição](#contribuição)
+- [Licença](#licença)
 
-The workspace contains two folders by default, where:
+## Funcionalidades
+- **Gerenciamento de Jogadores**: Cadastro, login e autenticação de usuários.
+- **Criação de Personagens**: Crie personagens com nome, nível, vida, mana e habilidades.
+- **Batalhas por Turnos**: Modos PvP (jogador contra jogador) e PvE (jogador contra monstro).
+- **Sistema de Habilidades**: Ataque básico e habilidades compráveis (ex.: Bola de Fogo, Raio Arcano).
+- **Loja de Habilidades**: Compre habilidades com moedas ganhas em batalhas.
+- **Ranking de Batalha**: Exibe a classificação final com base na ordem de derrota.
+- **Estruturas de Dados**: Implementa lista encadeada (`ListaEncadeada`), fila (`FilaEncadeada`) e pilha (`PilhaEncadeada`) para gerenciar o jogo.
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+## Pré-requisitos
+- **Java Development Kit (JDK)**: Versão 8 ou superior.
+- **Ambiente de Desenvolvimento**: Qualquer IDE (ex.: IntelliJ, Eclipse) ou terminal para compilar e executar Java.
+- **Git**: Para clonar o repositório (opcional).
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+## Instalação
+1. **Clonar o Repositório**:
+   ```bash
+   git clone https://github.com/Jfdeev/Projeto-RPG.git
+   cd Projeto-RPG
