@@ -7,7 +7,13 @@ public class RPGGame {
   private Scanner scanner;
   private int proximoIdJogador;
   private int proximoIdBatalha;
-  private Personagem personagemJogadorAtivo; // Para rastrear o personagem selecionado
+  private Personagem personagemJogadorAtivo;
+  private static ListaEncadeada<Habilidade> lojaHabilidades = new ListaEncadeada<>();
+    static {
+    lojaHabilidades.adicionar(new Habilidade(1, "Bola de Fogo", 20, 50));
+    lojaHabilidades.adicionar(new Habilidade(2, "Gelo Cortante", 15, 40));
+    lojaHabilidades.adicionar(new Habilidade(3, "Raio Arcano", 30, 70));
+  }
 
   public RPGGame() {
     jogadores = new ListaEncadeada<>();
@@ -16,7 +22,6 @@ public class RPGGame {
     scanner = new Scanner(System.in);
     proximoIdJogador = 1;
     proximoIdBatalha = 1;
-    // Jogador padrão para PvP/PvE simulado
     Jogador bot = new Jogador(proximoIdJogador++, "Bot", "bot");
     bot.criarPersonagem("Monstro1");
     bot.criarPersonagem("Monstro2");
@@ -93,8 +98,11 @@ public class RPGGame {
       System.out.println("2. Criar Personagem");
       System.out.println("3. Iniciar Batalha (PvP)");
       System.out.println("4. Iniciar Batalha (PvE)");
-      System.out.println("5. Sair");
-      System.out.print("Escolha uma opcao: ");
+      System.out.println("5. Consultar Moedas");
+      System.out.println("6. Loja de Habilidades");
+      System.out.println("7. Sair");
+      System.out.print("Escolha uma opção: ");
+    
       int opcao = lerInteiro();
 
       switch (opcao) {
@@ -111,6 +119,12 @@ public class RPGGame {
           iniciarBatalha(false);
           break;
         case 5:
+          exibirSaldoMoedas();
+          break;
+        case 6:
+          exibirLojaHabilidades();
+          break;
+        case 7:
           jogadorAtual = null;
           return;
         default:
@@ -149,7 +163,6 @@ public class RPGGame {
       return;
     }
 
-    // Seleção de personagem do jogador
     verPersonagens();
     System.out.print("Escolha seu personagem (número): ");
     int indice = lerInteiro() - 1;
@@ -158,16 +171,12 @@ public class RPGGame {
       return;
     }
     personagemJogadorAtivo = jogadorAtual.selecionarPersonagem(indice);
-    // Resetar vida e mana do personagem do jogador
     personagemJogadorAtivo.resetarEstado();
 
-    // Criar arena
     arenaAtual = new Arena(proximoIdBatalha++);
     arenaAtual.adicionarParticipante(personagemJogadorAtivo);
 
-    // Adicionar oponentes
     if (isPvP) {
-      // Simula outro jogador (Bot)
       Jogador bot = null;
       for (int i = 0; i < jogadores.tamanho(); i++) {
         if (!jogadores.obter(i).getNome().equals(jogadorAtual.getNome())) {
@@ -176,7 +185,6 @@ public class RPGGame {
         }
       }
       if (bot != null && !bot.getPersonagens().estaVazia()) {
-        // Selecionar personagem do Bot
         ListaEncadeada<Personagem> botPersonagens = bot.getPersonagens();
         System.out.println("\nPersonagens do oponente (Bot):");
         for (int i = 0; i < botPersonagens.tamanho(); i++) {
@@ -200,9 +208,7 @@ public class RPGGame {
         return;
       }
     } else {
-      // PvE: Criar monstro
       Personagem monstro = new Personagem(999, "Monstro", 1, 80, 30);
-      // Ajustar dano base do monstro com base no nível do personagem do jogador
       monstro.setDanoBase(10 + (personagemJogadorAtivo.getNivel() - 1) * 5); // Exemplo: 5 de dano por nível
       arenaAtual.adicionarParticipante(monstro);
     }
@@ -314,7 +320,6 @@ public class RPGGame {
       System.out.println("Empate!");
     }
     arenaAtual.exibirRanking();
-    // Resetar estado de todos os participantes
     ListaEncadeada<Personagem> participantes = arenaAtual.getParticipantes();
     for (int i = 0; i < participantes.tamanho(); i++) {
       participantes.obter(i).resetarEstado();
@@ -326,11 +331,57 @@ public class RPGGame {
     arenaAtual = null;
     personagemJogadorAtivo = null;
     if (opcao == 1) {
-      iniciarBatalha(true); // Nova batalha PvP para simplificar
-    } else {
-      exibirTelaPrincipal();
+      iniciarBatalha(true);
+    }
+    return;
+  }
+
+  private void exibirLojaHabilidades() {
+    System.out.println("\n=== Loja de Habilidades ===");
+    System.out.println("Suas moedas: " + jogadorAtual.getSaldoMoedas());
+    for (int i = 0; i < lojaHabilidades.tamanho(); i++) {
+      Habilidade h = lojaHabilidades.obter(i);
+      System.out.printf("%d. %s (Preço: %d moedas — Mana: %d, Dano: %d)%n",
+                        i+1, h.getNome(), h.getCustoMana()*2, h.getCustoMana(), h.getDano());
+    }
+    System.out.println((lojaHabilidades.tamanho()+1) + ". Voltar");
+    System.out.print("Escolha o que deseja comprar: ");
+    int escolha = lerInteiro() - 1;
+
+    if (escolha >= 0 && escolha < lojaHabilidades.tamanho()) {
+      Habilidade comprada = lojaHabilidades.obter(escolha);
+      int preco = comprada.getCustoMana() * 2;
+      if (jogadorAtual.gastarMoedas(preco)) {
+        ListaEncadeada<Personagem> chars = jogadorAtual.getPersonagens();
+        if (chars.estaVazia()) {
+          System.out.println("Nenhum personagem para equipar! Compra cancelada.");
+          jogadorAtual.adicionarMoedas(preco);
+        } else {
+          System.out.println("Em qual personagem equipar?");
+          for (int i = 0; i < chars.tamanho(); i++) {
+            System.out.println((i+1) + ". " + chars.obter(i).getNome());
+          }
+          int idx = lerInteiro() - 1;
+          if (idx >= 0 && idx < chars.tamanho()) {
+            chars.obter(idx).getHabilidades().adicionar(comprada);
+            System.out.println("Habilidade \"" + comprada.getNome() + "\" equipada em " +
+                               chars.obter(idx).getNome() + "!");
+          } else {
+            System.out.println("Personagem inválido! Compra cancelada.");
+            jogadorAtual.adicionarMoedas(preco);
+          }
+        }
+      } else {
+        System.out.println("Moedas insuficientes!");
+      }
     }
   }
+
+  private void exibirSaldoMoedas() {
+    System.out.println("\n=== Seu Saldo de Moedas ===");
+    System.out.println("Você tem " + jogadorAtual.getSaldoMoedas() + " moedas.\n");
+  }
+
 
   private int lerInteiro() {
     try {

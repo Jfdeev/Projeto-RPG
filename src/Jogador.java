@@ -41,4 +41,12 @@ public class Jogador {
   public void adicionarMoedas(int valor) {
     saldoMoedas += valor;
   }
+  
+  public boolean gastarMoedas(int valor) {
+    if (saldoMoedas >= valor) {
+      saldoMoedas -= valor;
+      return true;
+    }
+    return false;
+  }
 }
