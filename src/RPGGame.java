@@ -94,7 +94,7 @@ public class RPGGame {
       System.out.println("3. Iniciar Batalha (PvP)");
       System.out.println("4. Iniciar Batalha (PvE)");
       System.out.println("5. Sair");
-      System.out.print("Escolha uma opção: ");
+      System.out.print("Escolha uma opcao: ");
       int opcao = lerInteiro();
 
       switch (opcao) {
@@ -114,7 +114,7 @@ public class RPGGame {
           jogadorAtual = null;
           return;
         default:
-          System.out.println("Opção inválida!");
+          System.out.println("Opcao inválida!");
       }
     }
   }
@@ -130,7 +130,8 @@ public class RPGGame {
       Personagem p = personagens.obter(i);
       System.out.println((i + 1) + ". " + p.getNome() + " - Nível: " + p.getNivel() +
           ", Vida: " + p.getVidaAtual() + "/" + p.getVidaMaxima() +
-          ", Mana: " + p.getManaAtual() + "/" + p.getManaMaxima());
+          ", Mana: " + p.getManaAtual() + "/" + p.getManaMaxima() +
+          ", Dano Base: " + p.getDanoBase());
     }
   }
 
@@ -157,6 +158,8 @@ public class RPGGame {
       return;
     }
     personagemJogadorAtivo = jogadorAtual.selecionarPersonagem(indice);
+    // Resetar vida e mana do personagem do jogador
+    personagemJogadorAtivo.resetarEstado();
 
     // Criar arena
     arenaAtual = new Arena(proximoIdBatalha++);
@@ -182,12 +185,15 @@ public class RPGGame {
         }
         System.out.print("Escolha o oponente (número): ");
         int botIndice = lerInteiro() - 1;
+        Personagem botPersonagem;
         if (botIndice >= 0 && botIndice < botPersonagens.tamanho()) {
-          arenaAtual.adicionarParticipante(botPersonagens.obter(botIndice));
+          botPersonagem = botPersonagens.obter(botIndice);
         } else {
           System.out.println("Oponente inválido! Usando primeiro personagem.");
-          arenaAtual.adicionarParticipante(botPersonagens.obter(0));
+          botPersonagem = botPersonagens.obter(0);
         }
+        botPersonagem.resetarEstado();
+        arenaAtual.adicionarParticipante(botPersonagem);
       } else {
         System.out.println("Nenhum oponente disponível!");
         arenaAtual = null;
@@ -196,6 +202,8 @@ public class RPGGame {
     } else {
       // PvE: Criar monstro
       Personagem monstro = new Personagem(999, "Monstro", 1, 80, 30);
+      // Ajustar dano base do monstro com base no nível do personagem do jogador
+      monstro.setDanoBase(10 + (personagemJogadorAtivo.getNivel() - 1) * 5); // Exemplo: 5 de dano por nível
       arenaAtual.adicionarParticipante(monstro);
     }
 
@@ -210,7 +218,8 @@ public class RPGGame {
       for (int i = 0; i < participantes.tamanho(); i++) {
         Personagem p = participantes.obter(i);
         System.out.println("- " + p.getNome() + ": Vida " + p.getVidaAtual() + "/" + p.getVidaMaxima() +
-            ", Mana " + p.getManaAtual() + "/" + p.getManaMaxima());
+            ", Mana " + p.getManaAtual() + "/" + p.getManaMaxima() +
+            ", Dano Base: " + p.getDanoBase());
       }
       Personagem atual = arenaAtual.peekProximoTurno();
       if (atual == null) {
@@ -262,8 +271,7 @@ public class RPGGame {
           System.out.println("\nHabilidades:");
           for (int i = 0; i < habilidades.tamanho(); i++) {
             Habilidade h = habilidades.obter(i);
-            System.out
-                .println((i + 1) + ". " + h.getNome() + " (Mana: " + h.getCustoMana() + ", Dano: " + h.getDano() + ")");
+            System.out.println((i + 1) + ". " + h.getNome() + " (Mana: " + h.getCustoMana() + ", Dano: " + h.getDano() + ")");
           }
           System.out.print("Escolha a habilidade (número): ");
           int habIndice = lerInteiro() - 1;
@@ -306,6 +314,11 @@ public class RPGGame {
       System.out.println("Empate!");
     }
     arenaAtual.exibirRanking();
+    // Resetar estado de todos os participantes
+    ListaEncadeada<Personagem> participantes = arenaAtual.getParticipantes();
+    for (int i = 0; i < participantes.tamanho(); i++) {
+      participantes.obter(i).resetarEstado();
+    }
     System.out.println("\n1. Nova Batalha");
     System.out.println("2. Voltar ao Menu");
     System.out.print("Escolha uma opção: ");
