@@ -1,27 +1,26 @@
-
 public class PilhaEncadeada<T> {
   private class Node {
-    T dado;
-    Node proximo;
+    T data;
+    Node next;
 
-    Node(T dado) {
-      this.dado = dado;
-      this.proximo = null;
+    Node(T data) {
+      this.data = data;
+      this.next = null;
     }
   }
 
-  private Node topo;
+  private Node head;
   private int tamanho;
 
   public PilhaEncadeada() {
-    topo = null;
+    head = null;
     tamanho = 0;
   }
 
-  public void push(T dado) {
-    Node novoNode = new Node(dado);
-    novoNode.proximo = topo;
-    topo = novoNode;
+  public void push(T data) {
+    Node novoNode = new Node(data);
+    novoNode.next = head;
+    head = novoNode;
     tamanho++;
   }
 
@@ -29,21 +28,21 @@ public class PilhaEncadeada<T> {
     if (estaVazia()) {
       throw new IllegalStateException("Pilha vazia");
     }
-    T dado = topo.dado;
-    topo = topo.proximo;
+    T temp = head.data;
+    head = head.next;
     tamanho--;
-    return dado;
+    return temp;
   }
 
   public T peek() {
     if (estaVazia()) {
       throw new IllegalStateException("Pilha vazia");
     }
-    return topo.dado;
+    return head.data;
   }
 
   public boolean estaVazia() {
-    return tamanho == 0;
+    return head == null;
   }
 
   public int tamanho() {

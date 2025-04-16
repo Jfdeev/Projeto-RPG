@@ -1,3 +1,5 @@
+import java.util.Random;
+
 public class Arena {
   private int idBatalha;
   private ListaEncadeada<Personagem> participantes;
@@ -43,14 +45,20 @@ public class Arena {
         System.out.println(atual.getNome() + " usa habilidade em " + alvo.getNome() + "! Vida de " + alvo.getNome()
             + ": " + alvo.getVidaAtual());
       } else {
-        // Ação automática para não-jogadores
-        for (int i = 0; i < participantes.tamanho(); i++) {
-          Personagem alvoAuto = participantes.obter(i);
-          if (alvoAuto.estaVivo() && alvoAuto != atual) {
-            atual.usarHabilidade(1, alvoAuto);
-            System.out.println(atual.getNome() + " ataca " + alvoAuto.getNome() + "! Vida de " + alvoAuto.getNome()
-                + ": " + alvoAuto.getVidaAtual());
-            break;
+        ListaEncadeada<Habilidade> habilidades = atual.getHabilidades();
+        if (habilidades.tamanho() > 0) {
+          Random random = new Random();
+          int habilidadeAleatoriaIndex = random.nextInt(habilidades.tamanho());
+          Habilidade habilidadeAleatoria = habilidades.obter(habilidadeAleatoriaIndex);
+
+          for (int i = 0; i < participantes.tamanho(); i++) {
+            Personagem alvoAuto = participantes.obter(i);
+            if (alvoAuto.estaVivo() && alvoAuto != atual) {
+              atual.usarHabilidade(habilidadeAleatoria.getId(), alvoAuto);
+              System.out.println(atual.getNome() + " usa " + habilidadeAleatoria.getNome() + " em " + alvoAuto.getNome()
+                  + "! Vida de " + alvoAuto.getNome() + ": " + alvoAuto.getVidaAtual());
+              break;
+            }
           }
         }
       }
@@ -92,7 +100,6 @@ public class Arena {
       temp.push(p);
       pos++;
     }
-    // Restaurar pilha
     while (!temp.estaVazia()) {
       colocacao.push(temp.pop());
     }
@@ -114,10 +121,18 @@ public class Arena {
     return turnoAtual;
   }
 
+  public int getIdBatalha() {
+    return idBatalha;
+  }
+
+  public void setIdBatalha(int idBatalha) {
+    this.idBatalha = idBatalha;
+  }
+
   public Personagem peekProximoTurno() {
     if (filaTurnos.estaVazia()) {
-        return null;
+      return null;
     }
-    return filaTurnos.peek();   // usa o novo método peek()
-}
+    return filaTurnos.peek();
+  }
 }
