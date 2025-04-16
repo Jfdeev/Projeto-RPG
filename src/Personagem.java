@@ -6,6 +6,7 @@ public class Personagem {
   private int vidaAtual;
   private int manaMaxima;
   private int manaAtual;
+  private int danoBase; 
   private ListaEncadeada<Habilidade> habilidades;
 
   public Personagem(int idPersonagem, String nome, int nivel, int vidaMaxima, int manaMaxima) {
@@ -16,8 +17,9 @@ public class Personagem {
     this.vidaAtual = vidaMaxima;
     this.manaMaxima = manaMaxima;
     this.manaAtual = manaMaxima;
+    this.danoBase = 10; // Dano base inicial
     this.habilidades = new ListaEncadeada<>();
-    habilidades.adicionar(new Habilidade(1, "Ataque Básico", 0, 10));
+    habilidades.adicionar(new Habilidade(1, "Ataque Básico", 0, 0)); // Dano será baseado em danoBase
   }
 
   public void receberDano(int valor) {
@@ -41,7 +43,8 @@ public class Personagem {
       }
     }
     if (h != null && manaAtual >= h.getCustoMana()) {
-      alvo.receberDano(h.getDano());
+      int dano = (idHabilidade == 1) ? danoBase : h.getDano(); // Usa danoBase para Ataque Básico
+      alvo.receberDano(dano);
       manaAtual -= h.getCustoMana();
     }
   }
@@ -50,6 +53,11 @@ public class Personagem {
     nivel++;
     vidaMaxima += 10;
     manaMaxima += 5;
+    danoBase += 5; // Aumenta 5 de dano por nível
+    resetarEstado(); // Resetar vida e mana ao subir de nível
+  }
+
+  public void resetarEstado() {
     vidaAtual = vidaMaxima;
     manaAtual = manaMaxima;
   }
@@ -117,5 +125,14 @@ public class Personagem {
   public void setHabilidades(ListaEncadeada<Habilidade> habilidades) {
     this.habilidades = habilidades;
   }
+
+  public int getDanoBase(){
+    return danoBase;
+  }
+  
+  public void setDanoBase(int danoBase) {
+    this.danoBase = danoBase;
+  }
+
 
 }
