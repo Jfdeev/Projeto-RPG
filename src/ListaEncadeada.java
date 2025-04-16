@@ -1,4 +1,3 @@
-
 public class ListaEncadeada<T> {
   private class Node {
     T data;

@@ -6,7 +6,7 @@ public class Personagem {
   private int vidaAtual;
   private int manaMaxima;
   private int manaAtual;
-  private int danoBase; 
+  private int danoBase;
   private ListaEncadeada<Habilidade> habilidades;
 
   public Personagem(int idPersonagem, String nome, int nivel, int vidaMaxima, int manaMaxima) {
@@ -17,9 +17,9 @@ public class Personagem {
     this.vidaAtual = vidaMaxima;
     this.manaMaxima = manaMaxima;
     this.manaAtual = manaMaxima;
-    this.danoBase = 10; // Dano base inicial
+    this.danoBase = 10;
     this.habilidades = new ListaEncadeada<>();
-    habilidades.adicionar(new Habilidade(1, "Ataque Básico", 0, 0)); // Dano será baseado em danoBase
+    habilidades.adicionar(new Habilidade(1, "Ataque Básico", 0, 0));
   }
 
   public void receberDano(int valor) {
@@ -34,6 +34,13 @@ public class Personagem {
     return vidaAtual > 0;
   }
 
+  public void printHabilidades() {
+    for (int i = 0; i < habilidades.tamanho(); i++) {
+      Habilidade h = habilidades.obter(i);
+      System.out.print((i + 1) + ") " + h.getNome() + " ");
+    }
+  }
+
   public void usarHabilidade(int idHabilidade, Personagem alvo) {
     Habilidade h = null;
     for (int i = 0; i < habilidades.tamanho(); i++) {
@@ -43,7 +50,7 @@ public class Personagem {
       }
     }
     if (h != null && manaAtual >= h.getCustoMana()) {
-      int dano = (idHabilidade == 1) ? danoBase : h.getDano(); // Usa danoBase para Ataque Básico
+      int dano = (idHabilidade == 1) ? danoBase : h.getDano();
       alvo.receberDano(dano);
       manaAtual -= h.getCustoMana();
     }
@@ -53,8 +60,8 @@ public class Personagem {
     nivel++;
     vidaMaxima += 10;
     manaMaxima += 5;
-    danoBase += 5; // Aumenta 5 de dano por nível
-    resetarEstado(); // Resetar vida e mana ao subir de nível
+    danoBase += 5;
+    resetarEstado();
   }
 
   public void resetarEstado() {
@@ -126,13 +133,12 @@ public class Personagem {
     this.habilidades = habilidades;
   }
 
-  public int getDanoBase(){
+  public int getDanoBase() {
     return danoBase;
   }
-  
+
   public void setDanoBase(int danoBase) {
     this.danoBase = danoBase;
   }
-
 
 }

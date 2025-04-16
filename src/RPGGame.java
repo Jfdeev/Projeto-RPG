@@ -35,19 +35,20 @@ public class RPGGame {
   }
 
   private void exibirTelaLoginCadastro() {
+    jogadorAtual = null;
     System.out.println("\n=== RPG Turn-Based ===");
-    System.out.println("1. Login");
-    System.out.println("2. Cadastrar");
+    System.out.println("1. Cadastrar");
+    System.out.println("2. Login");
     System.out.println("3. Sair");
     System.out.print("Escolha uma opção: ");
     int opcao = lerInteiro();
 
     switch (opcao) {
       case 1:
-        login();
+        cadastrar();
         break;
       case 2:
-        cadastrar();
+        login();
         break;
       case 3:
         System.out.println("Saindo...");
@@ -58,6 +59,11 @@ public class RPGGame {
   }
 
   private void login() {
+    if (jogadores.estaVazia()) {
+      System.out.println("Nenhum jogador cadastrado!");
+      return;
+    }
+
     System.out.print("Digite o nome: ");
     String nome = scanner.nextLine();
     System.out.print("Digite a senha: ");
@@ -88,9 +94,17 @@ public class RPGGame {
     Jogador novo = new Jogador(proximoIdJogador++, nome, senha);
     jogadores.adicionar(novo);
     System.out.println("Cadastro realizado com sucesso!");
+
+    exibirTelaLoginCadastro();
   }
 
   private void exibirTelaPrincipal() {
+    if (jogadorAtual == null) {
+      System.out.println("Erro: Nenhum jogador está logado.");
+      exibirTelaLoginCadastro();
+      return;
+    }
+
     while (true) {
       System.out.println("\n=== Menu Principal - Jogador: " + jogadorAtual.getNome() + " ===");
       System.out.println("Moedas: " + jogadorAtual.getSaldoMoedas());
@@ -98,9 +112,8 @@ public class RPGGame {
       System.out.println("2. Criar Personagem");
       System.out.println("3. Iniciar Batalha (PvP)");
       System.out.println("4. Iniciar Batalha (PvE)");
-      System.out.println("5. Consultar Moedas");
-      System.out.println("6. Loja de Habilidades");
-      System.out.println("7. Sair");
+      System.out.println("5. Loja de Habilidades");
+      System.out.println("6. Sair");
       System.out.print("Escolha uma opção: ");
 
       int opcao = lerInteiro();
@@ -119,14 +132,12 @@ public class RPGGame {
           iniciarBatalha(false);
           break;
         case 5:
-          exibirSaldoMoedas();
-          break;
-        case 6:
           exibirLojaHabilidades();
           break;
-        case 7:
+        case 6:
           jogadorAtual = null;
-          return;
+          exibirTelaLoginCadastro();
+          break;
         default:
           System.out.println("Opcao inválida!");
       }
@@ -146,6 +157,9 @@ public class RPGGame {
           ", Vida: " + p.getVidaAtual() + "/" + p.getVidaMaxima() +
           ", Mana: " + p.getManaAtual() + "/" + p.getManaMaxima() +
           ", Dano Base: " + p.getDanoBase());
+      System.out.print("Habilidades: ");
+      p.printHabilidades();
+      System.out.println();
     }
   }
 
@@ -342,7 +356,7 @@ public class RPGGame {
     System.out.println("Suas moedas: " + jogadorAtual.getSaldoMoedas());
     for (int i = 0; i < lojaHabilidades.tamanho(); i++) {
       Habilidade h = lojaHabilidades.obter(i);
-      System.out.printf("%d. %s (Preço: %d moedas — Mana: %d, Dano: %d)%n",
+      System.out.printf("%d. %s (Preço: %d moedas, Mana: %d, Dano: %d)%n",
           i + 1, h.getNome(), h.getCustoMana() * 2, h.getCustoMana(), h.getDano());
     }
     System.out.println((lojaHabilidades.tamanho() + 1) + ". Voltar");
@@ -376,11 +390,6 @@ public class RPGGame {
         System.out.println("Moedas insuficientes!");
       }
     }
-  }
-
-  private void exibirSaldoMoedas() {
-    System.out.println("\n=== Seu Saldo de Moedas ===");
-    System.out.println("Você tem " + jogadorAtual.getSaldoMoedas() + " moedas.\n");
   }
 
   private int lerInteiro() {

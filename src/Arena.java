@@ -114,10 +114,18 @@ public class Arena {
     return turnoAtual;
   }
 
+  public int getIdBatalha() {
+    return idBatalha;
+  }
+
+  public void setIdBatalha(int idBatalha) {
+    this.idBatalha = idBatalha;
+  }
+
   public Personagem peekProximoTurno() {
     if (filaTurnos.estaVazia()) {
-        return null;
+      return null;
     }
-    return filaTurnos.peek();   // usa o novo método peek()
-}
+    return filaTurnos.peek(); // usa o novo método peek()
+  }
 }
