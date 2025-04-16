@@ -9,7 +9,7 @@ public class RPGGame {
   private int proximoIdBatalha;
   private Personagem personagemJogadorAtivo;
   private static ListaEncadeada<Habilidade> lojaHabilidades = new ListaEncadeada<>();
-    static {
+  static {
     lojaHabilidades.adicionar(new Habilidade(1, "Bola de Fogo", 20, 50));
     lojaHabilidades.adicionar(new Habilidade(2, "Gelo Cortante", 15, 40));
     lojaHabilidades.adicionar(new Habilidade(3, "Raio Arcano", 30, 70));
@@ -102,7 +102,7 @@ public class RPGGame {
       System.out.println("6. Loja de Habilidades");
       System.out.println("7. Sair");
       System.out.print("Escolha uma opção: ");
-    
+
       int opcao = lerInteiro();
 
       switch (opcao) {
@@ -277,7 +277,8 @@ public class RPGGame {
           System.out.println("\nHabilidades:");
           for (int i = 0; i < habilidades.tamanho(); i++) {
             Habilidade h = habilidades.obter(i);
-            System.out.println((i + 1) + ". " + h.getNome() + " (Mana: " + h.getCustoMana() + ", Dano: " + h.getDano() + ")");
+            System.out
+                .println((i + 1) + ". " + h.getNome() + " (Mana: " + h.getCustoMana() + ", Dano: " + h.getDano() + ")");
           }
           System.out.print("Escolha a habilidade (número): ");
           int habIndice = lerInteiro() - 1;
@@ -342,9 +343,9 @@ public class RPGGame {
     for (int i = 0; i < lojaHabilidades.tamanho(); i++) {
       Habilidade h = lojaHabilidades.obter(i);
       System.out.printf("%d. %s (Preço: %d moedas — Mana: %d, Dano: %d)%n",
-                        i+1, h.getNome(), h.getCustoMana()*2, h.getCustoMana(), h.getDano());
+          i + 1, h.getNome(), h.getCustoMana() * 2, h.getCustoMana(), h.getDano());
     }
-    System.out.println((lojaHabilidades.tamanho()+1) + ". Voltar");
+    System.out.println((lojaHabilidades.tamanho() + 1) + ". Voltar");
     System.out.print("Escolha o que deseja comprar: ");
     int escolha = lerInteiro() - 1;
 
@@ -359,13 +360,13 @@ public class RPGGame {
         } else {
           System.out.println("Em qual personagem equipar?");
           for (int i = 0; i < chars.tamanho(); i++) {
-            System.out.println((i+1) + ". " + chars.obter(i).getNome());
+            System.out.println((i + 1) + ". " + chars.obter(i).getNome());
           }
           int idx = lerInteiro() - 1;
           if (idx >= 0 && idx < chars.tamanho()) {
             chars.obter(idx).getHabilidades().adicionar(comprada);
             System.out.println("Habilidade \"" + comprada.getNome() + "\" equipada em " +
-                               chars.obter(idx).getNome() + "!");
+                chars.obter(idx).getNome() + "!");
           } else {
             System.out.println("Personagem inválido! Compra cancelada.");
             jogadorAtual.adicionarMoedas(preco);
@@ -381,7 +382,6 @@ public class RPGGame {
     System.out.println("\n=== Seu Saldo de Moedas ===");
     System.out.println("Você tem " + jogadorAtual.getSaldoMoedas() + " moedas.\n");
   }
-
 
   private int lerInteiro() {
     try {

@@ -1,46 +1,54 @@
 
 public class ListaEncadeada<T> {
   private class Node {
-    T dado;
-    Node proximo;
+    T data;
+    Node next;
 
-    Node(T dado) {
-      this.dado = dado;
-      this.proximo = null;
+    Node(T data) {
+      this.data = data;
+      this.next = null;
     }
   }
 
-  private Node cabeca;
+  private Node head;
   private int tamanho;
 
   public ListaEncadeada() {
-    cabeca = null;
+    head = null;
     tamanho = 0;
   }
 
-  public void adicionar(T dado) {
-    Node novoNode = new Node(dado);
-    if (cabeca == null) {
-      cabeca = novoNode;
+  public void adicionar(T data) {
+    Node novoNode = new Node(data);
+    if (head == null) {
+      head = novoNode;
     } else {
-      Node atual = cabeca;
-      while (atual.proximo != null) {
-        atual = atual.proximo;
+      Node atual = head;
+      while (atual.next != null) {
+        atual = atual.next;
       }
-      atual.proximo = novoNode;
+      atual.next = novoNode;
     }
     tamanho++;
+  }
+
+  public void remover() {
+    if (head == null) {
+      throw new IllegalStateException("Lista vazia");
+    }
+    head = head.next;
+    tamanho--;
   }
 
   public T obter(int indice) {
     if (indice < 0 || indice >= tamanho) {
       throw new IndexOutOfBoundsException("Índice inválido: " + indice);
     }
-    Node atual = cabeca;
+    Node atual = head;
     for (int i = 0; i < indice; i++) {
-      atual = atual.proximo;
+      atual = atual.next;
     }
-    return atual.dado;
+    return atual.data;
   }
 
   public int tamanho() {
@@ -48,6 +56,6 @@ public class ListaEncadeada<T> {
   }
 
   public boolean estaVazia() {
-    return tamanho == 0;
+    return head == null;
   }
 }

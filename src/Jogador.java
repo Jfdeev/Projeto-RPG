@@ -41,7 +41,15 @@ public class Jogador {
   public void adicionarMoedas(int valor) {
     saldoMoedas += valor;
   }
-  
+
+  public int getIdJogador() {
+    return idJogador;
+  }
+
+  public void setIdJogador(int idJogador) {
+    this.idJogador = idJogador;
+  }
+
   public boolean gastarMoedas(int valor) {
     if (saldoMoedas >= valor) {
       saldoMoedas -= valor;

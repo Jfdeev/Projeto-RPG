@@ -1,33 +1,33 @@
 
 public class FilaEncadeada<T> {
   private class Node {
-    T dado;
-    Node proximo;
+    T data;
+    Node next;
 
-    Node(T dado) {
-      this.dado = dado;
-      this.proximo = null;
+    Node(T data) {
+      this.data = data;
+      this.next = null;
     }
   }
 
-  private Node inicio;
-  private Node fim;
+  private Node head;
+  private Node tail;
   private int tamanho;
 
   public FilaEncadeada() {
-    inicio = null;
-    fim = null;
+    head = null;
+    tail = null;
     tamanho = 0;
   }
 
-  public void enqueue(T dado) {
-    Node novoNode = new Node(dado);
+  public void enqueue(T data) {
+    Node novoNode = new Node(data);
     if (estaVazia()) {
-      inicio = novoNode;
-      fim = novoNode;
+      head = novoNode;
+      tail = novoNode;
     } else {
-      fim.proximo = novoNode;
-      fim = novoNode;
+      tail.next = novoNode;
+      tail = novoNode;
     }
     tamanho++;
   }
@@ -36,27 +36,27 @@ public class FilaEncadeada<T> {
     if (estaVazia()) {
       throw new IllegalStateException("Fila vazia");
     }
-    T dado = inicio.dado;
-    inicio = inicio.proximo;
+    T temp = head.data;
+    head = head.next;
     tamanho--;
     if (estaVazia()) {
-      fim = null;
+      tail = null;
     }
-    return dado;
+    return temp;
   }
 
   public boolean estaVazia() {
-    return tamanho == 0;
+    return head == null;
   }
 
   public int tamanho() {
     return tamanho;
   }
-  
+
   public T peek() {
     if (estaVazia()) {
       throw new IllegalStateException("Fila vazia");
     }
-    return inicio.dado;
+    return head.data;
   }
 }
