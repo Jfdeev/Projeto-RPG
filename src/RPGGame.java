@@ -191,39 +191,45 @@ public class RPGGame {
     arenaAtual.adicionarParticipante(personagemJogadorAtivo);
 
     if (isPvP) {
-      Jogador bot = null;
-      for (int i = 0; i < jogadores.tamanho(); i++) {
-        if (!jogadores.obter(i).getNome().equals(jogadorAtual.getNome())) {
-          bot = jogadores.obter(i);
-          break;
-        }
-      }
-      if (bot != null && !bot.getPersonagens().estaVazia()) {
-        ListaEncadeada<Personagem> botPersonagens = bot.getPersonagens();
-        System.out.println("\nPersonagens do oponente (Bot):");
-        for (int i = 0; i < botPersonagens.tamanho(); i++) {
-          Personagem p = botPersonagens.obter(i);
-          System.out.println((i + 1) + ". " + p.getNome() + " - Vida: " + p.getVidaAtual());
-        }
-        System.out.print("Escolha o oponente (número): ");
-        int botIndice = lerInteiro() - 1;
-        Personagem botPersonagem;
-        if (botIndice >= 0 && botIndice < botPersonagens.tamanho()) {
-          botPersonagem = botPersonagens.obter(botIndice);
-        } else {
-          System.out.println("Oponente inválido! Usando primeiro personagem.");
-          botPersonagem = botPersonagens.obter(0);
-        }
-        botPersonagem.resetarEstado();
-        arenaAtual.adicionarParticipante(botPersonagem);
+      Jogador oponente = null;
+      printJogadores(jogadores);
+      System.out.print("Escolha o oponente (número): ");
+      int jogadorIndice = lerInteiro() - 1;
+      if (jogadorIndice >= 0 && jogadorIndice < jogadores.tamanho()) {
+        oponente = jogadores.obter(jogadorIndice);
       } else {
-        System.out.println("Nenhum oponente disponível!");
-        arenaAtual = null;
+        System.out.println("Oponente inválido! Usando Bot.");
+        oponente = jogadores.obter(0); // Bot padrão
+      }
+      if (oponente.getNome().equals(jogadorAtual.getNome())) {
+        System.out.println("Você não pode lutar contra si mesmo!");
         return;
       }
+      if (oponente.getPersonagens().estaVazia()) {
+        System.out.println("Oponente não possui personagens!");
+        return;
+      }
+
+      ListaEncadeada<Personagem> personagensOponente = oponente.getPersonagens();
+      System.out.println("\nPersonagens do oponente:");
+      for (int i = 0; i < personagensOponente.tamanho(); i++) {
+        Personagem p = personagensOponente.obter(i);
+        System.out.println((i + 1) + ". " + p.getNome() + " - Vida: " + p.getVidaAtual());
+      }
+      System.out.print("Escolha o personagem do oponente (número): ");
+      int personagemIndice = lerInteiro() - 1;
+      Personagem personagemOponente;
+      if (personagemIndice >= 0 && personagemIndice < personagensOponente.tamanho()) {
+        personagemOponente = personagensOponente.obter(personagemIndice);
+      } else {
+        System.out.println("Personagem inválido! Usando o primeiro personagem.");
+        personagemOponente = personagensOponente.obter(0);
+      }
+      personagemOponente.resetarEstado();
+      arenaAtual.adicionarParticipante(personagemOponente);
     } else {
       Personagem monstro = new Personagem(999, "Monstro", 1, 80, 30);
-      monstro.setDanoBase(10 + (personagemJogadorAtivo.getNivel() - 1) * 5); // Exemplo: 5 de dano por nível
+      monstro.setDanoBase(10 + (personagemJogadorAtivo.getNivel() - 1) * 5);
       arenaAtual.adicionarParticipante(monstro);
     }
 
@@ -248,7 +254,6 @@ public class RPGGame {
       System.out.println("Próximo a agir: " + atual.getNome());
 
       if (atual == personagemJogadorAtivo) {
-        // Turno do jogador
         System.out.println("\nAções:");
         System.out.println("1. Atacar");
         System.out.println("2. Usar Habilidade");
@@ -297,10 +302,14 @@ public class RPGGame {
           System.out.print("Escolha a habilidade (número): ");
           int habIndice = lerInteiro() - 1;
           if (habIndice >= 0 && habIndice < habilidades.tamanho()) {
-            arenaAtual.executarTurno(atual, habilidades.obter(habIndice).getId(), alvo);
+            Habilidade habilidade = habilidades.obter(habIndice);
+            if (atual.getManaAtual() >= habilidade.getCustoMana()) {
+              arenaAtual.executarTurno(atual, habilidade.getId(), alvo);
+            } else {
+              System.out.println("Mana insuficiente! Ação cancelada.");
+            }
           } else {
             System.out.println("Habilidade inválida! Ação cancelada.");
-            arenaAtual.executarTurno(null, 1, null);
           }
         } else {
           System.out.println("Ação inválida! Turno perdido.");
@@ -398,6 +407,14 @@ public class RPGGame {
       return valor;
     } catch (NumberFormatException e) {
       return -1;
+    }
+  }
+
+  private void printJogadores(ListaEncadeada<Jogador> jogadores) {
+    System.out.println("Jogadores");
+    for (int i = 0; i < jogadores.tamanho(); i++) {
+      Jogador j = jogadores.obter(i);
+      System.out.println("- " + j.getNome() + " (ID: " + j.getIdJogador() + ")");
     }
   }
 

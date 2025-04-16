@@ -19,7 +19,7 @@ public class Personagem {
     this.manaAtual = manaMaxima;
     this.danoBase = 10;
     this.habilidades = new ListaEncadeada<>();
-    habilidades.adicionar(new Habilidade(1, "Ataque Básico", 0, 0));
+    habilidades.adicionar(new Habilidade(1, "Ataque Básico", 0, danoBase));
   }
 
   public void receberDano(int valor) {
@@ -50,7 +50,7 @@ public class Personagem {
       }
     }
     if (h != null && manaAtual >= h.getCustoMana()) {
-      int dano = (idHabilidade == 1) ? danoBase : h.getDano();
+      int dano = h.getDano();
       alvo.receberDano(dano);
       manaAtual -= h.getCustoMana();
     }

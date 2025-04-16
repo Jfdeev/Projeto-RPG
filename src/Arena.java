@@ -43,7 +43,6 @@ public class Arena {
         System.out.println(atual.getNome() + " usa habilidade em " + alvo.getNome() + "! Vida de " + alvo.getNome()
             + ": " + alvo.getVidaAtual());
       } else {
-        // Ação automática para não-jogadores
         for (int i = 0; i < participantes.tamanho(); i++) {
           Personagem alvoAuto = participantes.obter(i);
           if (alvoAuto.estaVivo() && alvoAuto != atual) {
@@ -92,7 +91,6 @@ public class Arena {
       temp.push(p);
       pos++;
     }
-    // Restaurar pilha
     while (!temp.estaVazia()) {
       colocacao.push(temp.pop());
     }
@@ -126,6 +124,6 @@ public class Arena {
     if (filaTurnos.estaVazia()) {
       return null;
     }
-    return filaTurnos.peek(); // usa o novo método peek()
+    return filaTurnos.peek();
   }
 }
